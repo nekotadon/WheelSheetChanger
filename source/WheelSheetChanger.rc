@@ -1,0 +1,8 @@
+/*
+MinGW
+windres WheelSheetChanger.rc -o WheelSheetChanger.o
+
+Visual Studio
+rc WheelSheetChanger.rc
+*/
+100 ICON "icon.ico"
