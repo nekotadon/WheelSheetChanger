@@ -192,7 +192,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
             }
 
             // Explorerの設定
-            if (GetPrivateProfileString(L"setting", L"Explorer", L"0", setting, _countof(setting), inifile))
+            if (GetPrivateProfileString(L"setting", L"Explorer", L"1", setting, _countof(setting), inifile))
             {
                 isEnable_Explorer = (wcscmp(setting, L"1") == 0);
                 HookSettingChange(IS_ENABLE_EXPLORER, isEnable_Explorer);
