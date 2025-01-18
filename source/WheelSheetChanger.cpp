@@ -117,7 +117,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
     // 二重起動禁止
-    wchar_t AppName[] = L"WheelSheetChanger";
+    wchar_t AppName[] = L"WheelSheetChanger v1.1.0";
 
     hMutex = CreateMutex(NULL, TRUE, AppName);  // ミューテックスを作成
     if (GetLastError() == ERROR_ALREADY_EXISTS) // ミューテックスがすでに存在する場合

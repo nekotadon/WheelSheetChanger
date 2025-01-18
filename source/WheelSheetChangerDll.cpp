@@ -276,6 +276,38 @@ LRESULT CALLBACK HookProc(int nCode, WPARAM wParam, LPARAM lParam)
                 // EXCEL.EXEの場合
                 if (wcscmp(fname, L"excel") == 0 && wcscmp(ext, L".exe") == 0)
                 {
+                    // 親ウィンドウ
+                    HWND parenthWnd = GetAncestor(hWnd, GA_PARENT);
+
+                    if (hWnd != NULL && parenthWnd != NULL)
+                    {
+                        // 自身のクラス名
+                        wchar_t myClassname[MAX_PATH];
+                        GetClassName(hWnd, myClassname, _countof(myClassname));
+
+                        // 親のタイトル、クラス名
+                        wchar_t parentTitle[MAX_PATH];
+                        wchar_t parentClassname[MAX_PATH];
+                        GetWindowText(parenthWnd, parentTitle, _countof(parentTitle));
+                        GetClassName(parenthWnd, parentClassname, _countof(parentClassname));
+
+                        // 水平スクロールバー領域の場合
+                        if (wcscmp(myClassname, L"NetUIHWND") == 0 && wcscmp(parentTitle, L"水平方向") == 0 && wcscmp(parentClassname, L"NUIScrollbar") == 0)
+                        {
+                            // ホイールの回転方向確認
+                            LPMSLLHOOKSTRUCT param;
+                            param = (LPMSLLHOOKSTRUCT)lParam;
+                            WORD delta = HIWORD(param->mouseData);
+
+                            // オブジェクトハンドルを閉じる
+                            CloseHandle(hProcess);
+
+                            // 水平スクロールメッセージの送信
+                            PostMessage(hWnd, WM_MOUSEHWHEEL, MAKEWPARAM(0, -delta), MAKELPARAM(point.x, point.y));
+                            return 1;
+                        }
+                    }
+
                     // ルートウィンドウ
                     HWND roothWnd = GetAncestor(hWnd, GA_ROOT);
 
@@ -294,18 +326,6 @@ LRESULT CALLBACK HookProc(int nCode, WPARAM wParam, LPARAM lParam)
                         if (windowSize.left <= point.x && point.x <= scrollRECT.left && scrollRECT.top - 5 <= point.y && point.y <= scrollRECT.bottom + 5)
                         {
                             sheetArea = TRUE;
-                        }
-                        // 水平スクロールバー領域の場合
-                        else if (scrollRECT.left <= point.x && point.x <= scrollRECT.right && scrollRECT.top - 5 <= point.y && point.y <= scrollRECT.bottom + 5)
-                        {
-                            // ホイールの回転方向確認
-                            LPMSLLHOOKSTRUCT param;
-                            param = (LPMSLLHOOKSTRUCT)lParam;
-                            WORD delta = HIWORD(param->mouseData);
-
-                            // 水平スクロールメッセージの送信
-                            PostMessageW(hWnd, WM_MOUSEHWHEEL, MAKEWPARAM(0, -delta), MAKELPARAM(point.x, point.y));
-                            return 1;
                         }
                     }
                 }
